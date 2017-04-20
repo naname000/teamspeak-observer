@@ -1,0 +1,20 @@
+{
+  "name": "teamspeak-observer",
+  "version": "1.0.0",
+  "description": "Observer Teamspeak Server",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "naname@naname.net",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^4.3.0",
+    "mocha": "^3.2.0",
+    "should": "^11.2.1"
+  },
+  "dependencies": {
+    "teamspeak-query": "^1.5.4"
+  }
+}

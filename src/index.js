@@ -30,6 +30,7 @@ class TeamspeakObserver extends EventEmitter {
     options = options || {};
 
     this.tsquery = new TeamspeakQuery(this.host, this.port, this.options); // 接続処理がコンストラクタに内包されている
+    console.log('TeamspeakObserver: connecting to ' + this.host + ':' + this.port + '....');
     // socketへのイベントハンドラ登録
     // 遅れるとconnectイベントが拾えない。バグの香り。
 

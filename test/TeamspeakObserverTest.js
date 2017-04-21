@@ -2,15 +2,15 @@
 
 const HOST = '127.0.0.1';
 const NONEXISTHOST = '192.0.2.1'; // 例示用IPアドレス。存在しないホスト。
-const PORT = '10011';
+const PORT = 10011;
 const SQ_USERNAME = 'serveradmin';
 const SQ_PASSWORD = 'sLkn8BnK';
 const SQ_FAKEPASSWORD = 'hogehoge';
 const TSObserver = require('../src/index.js');
 
 describe('サーバにユーザが接続されたことを検出する(要接続操作TSクライアント)', function() {
-  this.timeout(20 * 1000);
   it.skip('cliententerview', function (done) {
+    this.timeout(20 * 1000);
     const observer = new TSObserver(HOST, PORT, SQ_USERNAME, SQ_PASSWORD, {});
     observer.login();
     observer.on(TSObserver.ONCONNECTED, () => {
@@ -21,7 +21,7 @@ describe('サーバにユーザが接続されたことを検出する(要接続
     });
     observer.on(TSObserver.ONERROR, (error) => done(new Error(JSON.stringify(error))));
   });
-  it('socket.emit("connect" is called when instance created', function(done) {
+  it('socket.emit("connect") is called when instance created', function(done) {
     const observer = new TSObserver(HOST, PORT, SQ_USERNAME, SQ_PASSWORD, {});
     observer.on(TSObserver.ONCONNECTED, () => done());
   });
@@ -43,18 +43,31 @@ describe('サーバにユーザが接続されたことを検出する(要接続
   it('socket.emit("close") is called when calls quit()', function (done) {
     const observer = new TSObserver(HOST, PORT, SQ_USERNAME, SQ_PASSWORD, {});
     observer.on(TSObserver.ONCONNECTED, () => {
+      observer.on(TSObserver.ONCLOSE, () => done());
       observer.quit();
     });
-    observer.on(TSObserver.ONCLOSE, () => done());
   });
   it('接続先がダウンしていることをタイムアウト以外で検出することが出来ない。', function(done) {
-    const observer = new TSObserver(NONEXISTHOST);
+    const observer = new TSObserver(NONEXISTHOST, PORT);
     observer.tsquery.sock.setTimeout(500);
     observer.on(TSObserver.ONTIMEOUT, () => done());
     observer.on(TSObserver.ONSOCKETERROR, (error) => done());
     observer.on(TSObserver.ONEND, () => done());
     observer.on(TSObserver.ONCLOSE, () => done());
     observer.on(TSObserver.ONCONNECTED, () => done());
+  });
+  it('接続先のサーバは生きているがポートがListenしていない時はerrorとcloseイベントが発火する。', function(done) {
+    // errorイベントが先に発火する模様。had_error引数はtrueが入ってくる。
+    const observer = new TSObserver(HOST, PORT+1);
+    var eventFired = false;
+    observer.on(TSObserver.ONSOCKETERROR, (error) => {
+      if(eventFired) done();
+      eventFired = true;
+    });
+    observer.on(TSObserver.ONCLOSE, (had_error) => {
+      if(eventFired) done();
+      eventFired = true;
+    });
   });
 });
 

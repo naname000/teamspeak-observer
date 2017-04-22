@@ -25,7 +25,7 @@ describe('サーバにユーザが接続されたことを検出する(要接続
     const observer = new TSObserver(HOST, PORT, SQ_USERNAME, SQ_PASSWORD, {});
     observer.on(TSObserver.ONCONNECTED, () => done());
   });
-  it('login() then occurred ONAUTHENTICATED', function(done) {
+  it.only('login() then occurred ONAUTHENTICATED', function(done) {
     const observer = new TSObserver(HOST, PORT, SQ_USERNAME, SQ_PASSWORD, {});
     observer.on(TSObserver.ONAUTHENTICATED, () => done());
     observer.login();

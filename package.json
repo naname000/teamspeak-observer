@@ -15,6 +15,6 @@
     "should": "^11.2.1"
   },
   "dependencies": {
-    "teamspeak-query": "^1.5.4"
+    "teamspeak-query": "github:yousan/teamspeak-query"
   }
 }
